@@ -1,0 +1,15 @@
+philosopher
+
+Oncelikle argumanlar.
+No of philosophers (therefore forks);
+Time to die bu kadar saniye yemediyse oluyor.
+Time to eat kac saniye boyunca yiyolar.
+Time to sleep yedikten sonra kac saniye uyuyorlar.
+Thinking yemezken bekliyorlar aslinda.
+
+usable functions:
+memset, printf, malloc, free, write,
+usleep, gettimeofday, pthread_create,
+pthread_detach, pthread_join, pthread_mutex_init,
+pthread_mutex_destroy, pthread_mutex_lock,
+pthread_mutex_unlock
