@@ -5,6 +5,7 @@ void	printAction(struct philosopher_t *main, char *msg)
 	if (!main->thread_main->died)
 	{
 		pthread_mutex_lock(&main->thread_main->ID_lock);
+		usleep(100);
 		ft_printf("%i:ms ", timestamp() - main->thread_main->startTime);
 		ft_printf("%i ", main->philosopher_ID);
 		ft_printf("%s\n", msg);
