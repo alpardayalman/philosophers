@@ -1,6 +1,6 @@
 #include "../inc/philosophers.h"
 
-void	thread_doer(struct thread_t *main)
+void	thread_doer(t_thread *main)
 {
 	for (int i = 0; i < main->no_of_philosophers; i++)
 	{
@@ -14,14 +14,14 @@ void	thread_doer(struct thread_t *main)
 		pthread_join(*main->philosophers[i]->philosopher, NULL);
 		pthread_mutex_destroy(main->forks[i]);
 	}
-	pthread_mutex_destroy(&main->ID_lock);
+	pthread_mutex_destroy(&main->id_lock);
 }
 
 int	main(int ac, char **av)
 {
 	bool	check_arg;
 	check_arg = checker(ac, av);
-	struct thread_t *main = create(av, check_arg);
+	t_thread *main = create(av, check_arg);
 	thread_doer(main);
 	return 1;
 }

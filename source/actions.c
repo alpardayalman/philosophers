@@ -1,28 +1,28 @@
 #include "../inc/philosophers.h"
 
-void	printAction(struct philosopher_t *main, char *msg)
+void	printaction(t_philosopher *main, char *msg)
 {
 	if (!main->thread_main->died)
 	{
-		pthread_mutex_lock(&main->thread_main->ID_lock);
+		pthread_mutex_lock(&main->thread_main->id_lock);
 		usleep(100);
-		ft_printf("%i:ms ", timestamp() - main->thread_main->startTime);
-		ft_printf("%i ", main->philosopher_ID);
+		ft_printf("%i:ms ", timestamp() - main->thread_main->start_time);
+		ft_printf("%i ", main->philosopher_id);
 		ft_printf("%s\n", msg);
-		pthread_mutex_unlock(&main->thread_main->ID_lock);
+		pthread_mutex_unlock(&main->thread_main->id_lock);
 	}
 }
 
-void	print_dead_action(struct philosopher_t *main, char *msg)
+void	print_dead_action(t_philosopher *main, char *msg)
 {
 	main->thread_main->died = 1;
-	pthread_mutex_lock(&main->thread_main->ID_lock);
-	ft_printf("%i:ms ", timestamp() - main->thread_main->startTime);
-	ft_printf("%i ", main->philosopher_ID);
+	pthread_mutex_lock(&main->thread_main->id_lock);
+	ft_printf("%i:ms ", timestamp() - main->thread_main->start_time);
+	ft_printf("%i ", main->philosopher_id);
 	ft_printf("%s\n", msg);
 }
 
-void smart_sleep(int ms)
+void	smart_sleep(int ms)
 {
 	long time = timestamp();
 	usleep(ms*920);
@@ -30,16 +30,16 @@ void smart_sleep(int ms)
 		usleep(ms*3);
 }
 
-void	eat(struct philosopher_t *philos)
+void	eat(t_philosopher *philos)
 {
-	struct thread_t *main = philos->thread_main;
+	t_thread *main = philos->thread_main;
 	if (philos->num_of_time_ate != main->all_should_eat && !main->died)
 	{
 		pthread_mutex_lock(main->forks[philos->fork_l]);
-		printAction(philos, "has taken the left fork");
+		printaction(philos, "has taken the left fork");
 		pthread_mutex_lock(main->forks[philos->fork_r]);
-		printAction(philos, "has taken the right fork");
-		printAction(philos, "is eating");
+		printaction(philos, "has taken the right fork");
+		printaction(philos, "is eating");
 		philos->num_of_time_ate++;
 		philos->time_since_eat = timestamp();
 		smart_sleep(philos->thread_main->time_of_eat);
@@ -48,7 +48,7 @@ void	eat(struct philosopher_t *philos)
 	}
 }
 
-int	dead(struct thread_t *main)
+int	dead(t_thread *main)
 {
 	int	i;
 
@@ -62,7 +62,7 @@ int	dead(struct thread_t *main)
 			if (timestamp() - main->philosophers[i % main->no_of_philosophers]->time_since_eat > main->time_of_death)
 			{
 				print_dead_action(main->philosophers[i % main->no_of_philosophers], "died");
-				pthread_mutex_unlock(&main->ID_lock);
+				pthread_mutex_unlock(&main->id_lock);
 				return (1);
 			}
 		}
@@ -72,21 +72,21 @@ int	dead(struct thread_t *main)
 
 void	*work(void *main_struct)
 {
-	struct philosopher_t *philos = (struct philosopher_t *)main_struct;
-	struct thread_t *main = philos->thread_main;
-	if (philos->philosopher_ID % 2 == 1)
+	t_philosopher *philos = (t_philosopher *)main_struct;
+	t_thread *main = philos->thread_main;
+	if (philos->philosopher_id % 2 == 1)
 		smart_sleep(100);
 	while (!main->died && (philos->num_of_time_ate != main->all_should_eat))
 	{
 		eat(philos);
 		if (philos->num_of_time_ate == main->all_should_eat)
 		{
-			printAction(philos, "ate all the food it was due.");
+			printaction(philos, "ate all the food it was due.");
 			return NULL;
 		}
-		printAction(philos, "is sleeping");
+		printaction(philos, "is sleeping");
 		smart_sleep(main->time_of_sleep);
-		printAction(philos, "is thinking");
+		printaction(philos, "is thinking");
 	}
 	return NULL;
 }
